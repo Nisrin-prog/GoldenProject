@@ -1,6 +1,8 @@
 var rCherryImg, pCherryImg, bCherryImg;
 var snakeImg;
 var wallImg;
+var PLAY = 1
+var END = 0
 var gameState = PLAY;
 
 function preload(){
@@ -49,43 +51,69 @@ function setup(){
     rCherryGroup = new Group();
     pCherryGroup = new Group();
     bCherryGroup = new Group();
+
+    score = 0
 }
 
 function draw(){
-    background("green");
+    if(gameState === PLAY){
+        background("green");
 
-    if(keyDown("left")){
-        snake.x -= 5;
-        snake.mirrorX(1);
-        snake.rotation = 180;
-    } 
-    else if(keyDown("right")){
-        snake.x += 5;
-        snake.mirrorX(-1);
-        snake.rotation = -180;
-    }
-    else if(keyDown("up")){
-        snake.y -= 5;
-        snake.mirrorY(-1);
-        snake.rotation = 90;
-    }
-    else if(keyDown("down")){
-        snake.y += 5;
-        snake.mirrorY(+1);
-        snake.rotation = -90;
-    }
+        if(keyDown("left")){
+            snake.x -= 5;
+            snake.mirrorX(1);
+            snake.rotation = 180;
+        } 
+        else if(keyDown("right")){
+            snake.x += 5;
+            snake.mirrorX(-1);
+            snake.rotation = -180;
+        }
+        else if(keyDown("up")){
+            snake.y -= 5;
+            snake.mirrorY(-1);
+            snake.rotation = 90;
+        }
+        else if(keyDown("down")){
+            snake.y += 5;
+            snake.mirrorY(+1);
+            snake.rotation = -90;
+        }
 
-    if(frameCount % 50 === 0){
-        spawnRCherry();
-    }
+        if(frameCount % 50 === 0){
+            spawnRCherry();
+        }
 
-    if(frameCount % 200 === 0){
-        spawnBCherry();
-    }
+        if(frameCount % 200 === 0){
+            spawnBCherry();
+        }
 
-    if(frameCount % 100 === 0){
-        spawnPCherry();
-    }
+        if(frameCount % 100 === 0){
+            spawnPCherry();
+        }
+        if(pCherryGroup.isTouching(snake)){
+            
+        }
+        if(rCherryGroup){
+            console.log(rCherryGroup.length)
+            for(var i = 0;i<rCherryGroup.length;i++){  
+                if(rCherryGroup.isTouching(snake)){
+                    console.log(i)
+                    var result = get(i)
+                    console.log(result)
+                    rCherryGroup.destroyEach(i)
+                    score = score + 1 
+                    //snake.scale = snake.scale + score/100 
+                }   
+            }
+        }
 
+        if(bCherryGroup.isTouching(snake)){
+            gameState = END
+        }
+    }
+    else if(gameState === END){
+        snake.setVelocity(0,0)
+    }
     drawSprites();
 }
